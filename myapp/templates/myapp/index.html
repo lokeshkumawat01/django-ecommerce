@@ -1,0 +1,12 @@
+
+{% extends 'myapp/base.html' %}
+{% block body %}
+{% include 'myapp/components/hero.html' %}
+{% include 'myapp/components/categories.html' %}
+{% include 'myapp/components/product_row.html' with title="🔥 Today's Deals" products=products %}
+{% include 'myapp/components/product_row.html' with title="⭐ Best Sellers" products=products %}
+{% include 'myapp/components/banner.html' %}
+{% include 'myapp/components/features.html' %}
+{% include 'myapp/components/reviews.html' %}
+{% include 'myapp/components/newsletter.html' %}
+{% endblock %}

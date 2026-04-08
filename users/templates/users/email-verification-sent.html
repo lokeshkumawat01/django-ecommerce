@@ -1,0 +1,18 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+<div class="max-w-md mx-auto py-20 px-6 text-center">
+    <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-8 gsap-icon">
+        <svg class="w-12 h-12 text-blue-600 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Verify Your Email 📧</h1>
+    <p class="text-gray-500 mb-10 leading-relaxed">
+        Humne ek activation link aapke email par bheja hai. <br>
+        Please link par click karke apna account activate karein.
+    </p>
+    <div class="pt-6 border-t border-gray-100">
+        <p class="text-sm text-gray-400">Email nahi mila? <a href="#" class="text-blue-600 font-bold hover:underline ml-1">Resend Email</a></p>
+    </div>
+</div>
+{% endblock %}

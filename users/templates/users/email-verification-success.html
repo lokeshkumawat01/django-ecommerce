@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+<div class="max-w-md mx-auto py-20 px-6 text-center">
+    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg shadow-green-100">
+        <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Verified Successfully! ✅</h1>
+    <p class="text-gray-500 mb-10">Aapka account ab activate ho chuka hai. Ab aap shopping shuru kar sakte hain.</p>
+    <a href="{% url 'login' %}" class="inline-block bg-blue-600 text-white px-12 py-4 rounded-2xl font-bold shadow-xl shadow-blue-100 hover:bg-blue-700 transition transform hover:-translate-y-1">
+        Login to MyShop
+    </a>
+</div>
+{% endblock %}

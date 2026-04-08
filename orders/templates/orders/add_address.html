@@ -1,0 +1,99 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+
+<div class="max-w-2xl mx-auto py-10 relative">
+    
+    <a href="javascript:history.back()" class="inline-flex items-center text-gray-500 hover:text-green-600 mb-6 transition duration-300 gsap-fade">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Back to Cart
+    </a>
+
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-10 gsap-card relative overflow-hidden">
+        
+        <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-full -z-10 opacity-70"></div>
+
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Delivery Address
+            </h2>
+            <p class="text-gray-500 mt-2 text-sm font-medium">Please enter your details to receive your awesome products.</p>
+        </div>
+
+        <form action="" method="POST" class="pro-form relative z-10">
+            {% csrf_token %}
+            
+            <div class="gsap-fields">
+                {{ form.as_p }}
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 gsap-btn">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white text-lg font-bold py-3.5 rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Save Address & Continue
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        /* ----------------------------------------------------
+           1. TAILWIND CLASS INJECTOR (Makes Django form beautiful)
+        ----------------------------------------------------- */
+        
+        // Style Inputs
+        const inputs = document.querySelectorAll('.pro-form input, .pro-form textarea, .pro-form select');
+        inputs.forEach(input => {
+            if(input.type === 'checkbox') {
+                input.classList.add('w-5', 'h-5', 'text-green-600', 'border-gray-300', 'rounded', 'focus:ring-green-500', 'cursor-pointer');
+            } else {
+                input.classList.add(
+                    'w-full', 'px-4', 'py-3', 'rounded-xl', 'border', 'border-gray-200', 
+                    'bg-gray-50', 'text-gray-900', 'transition', 'duration-300',
+                    'focus:bg-white', 'focus:outline-none', 'focus:border-green-500', 
+                    'focus:ring-2', 'focus:ring-green-500/20'
+                );
+            }
+        });
+
+        // Style Labels
+        const labels = document.querySelectorAll('.pro-form label');
+        labels.forEach(label => {
+            label.classList.add('block', 'text-sm', 'font-semibold', 'text-gray-700', 'mb-1.5');
+        });
+
+        // Style P tags (Wrappers)
+        const paragraphs = document.querySelectorAll('.pro-form p');
+        paragraphs.forEach(p => {
+            p.classList.add('flex', 'flex-col', 'mb-5');
+        });
+
+
+        /* ----------------------------------------------------
+           2. GSAP PAGE ANIMATIONS
+        ----------------------------------------------------- */
+        
+        // Only run animations if gsap is loaded (fallback safety)
+        if (typeof gsap !== 'undefined') {
+            gsap.from(".gsap-fade", { x: -20, opacity: 0, duration: 0.6, ease: "power2.out" });
+            gsap.from(".gsap-card", { y: 30, opacity: 0, duration: 0.7, delay: 0.1, ease: "power3.out" });
+            
+            // Stagger animation for form fields appearing one by one
+            gsap.from(".pro-form p", {
+                y: 15,
+                opacity: 0,
+                duration: 0.4,
+                stagger: 0.08, 
+                delay: 0.3,
+                ease: "power2.out"
+            });
+
+            gsap.from(".gsap-btn", { y: 20, opacity: 0, duration: 0.5, delay: 0.8, ease: "back.out(1.5)" });
+        }
+    });
+</script>
+
+{% endblock %}

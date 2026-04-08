@@ -1,0 +1,94 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+<div class="max-w-6xl mx-auto py-12 px-6">
+    
+    <div class="mb-8" data-aos="fade-down">
+        <h1 class="text-3xl font-bold text-gray-900">My Account</h1>
+        <p class="text-gray-500">Update your personal details and default shipping address.</p>
+    </div>
+
+    <form method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {% csrf_token %}
+        
+        <div class="lg:col-span-1 space-y-6" data-aos="fade-right">
+            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm text-center">
+                <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto flex items-center justify-center text-white text-4xl font-bold mb-4 shadow-xl shadow-blue-100">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">{{ request.user.username }}</h2>
+                <p class="text-sm text-gray-400 mb-6">{{ request.user.email }}</p>
+                
+                <div class="flex flex-col gap-3">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition transform hover:-translate-y-1">
+                        Save Changes
+                    </button>
+                    <a href="{% url 'logout' %}" class="text-sm font-semibold text-red-500 hover:underline">Sign Out</a>
+                </div>
+            </div>
+            <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Security</h3>
+                <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                    <p class="text-sm text-orange-800 font-medium mb-3">Want to change your password?</p>
+                    <a href="{% url 'password_reset' %}" class="inline-flex items-center text-sm font-bold text-orange-600 hover:text-orange-700">
+                        Reset Password Now
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 space-y-8" data-aos="fade-up">
+            
+            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+                <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center border-b pb-4 border-gray-50">
+                    <span class="w-1.5 h-6 bg-blue-600 rounded-full mr-3"></span>
+                    Personal Details
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for field in user_form %}
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-gray-600">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+                <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center border-b pb-4 border-gray-50">
+                    <span class="w-1.5 h-6 bg-orange-500 rounded-full mr-3"></span>
+                    Shipping Address
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for field in address_form %}
+                    <div class="space-y-2 {% if field.name == 'line1' or field.name == 'line2' %}md:col-span-2{% endif %}">
+                        <label class="text-sm font-semibold text-gray-600">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Premium Input Styling */
+    input, select, textarea {
+        width: 100%;
+        background-color: #f9fafb !important;
+        border: 1px solid #f3f4f6 !important;
+        padding: 0.85rem 1.25rem !important;
+        border-radius: 1rem !important;
+        font-size: 0.95rem !important;
+        transition: all 0.3s ease !important;
+    }
+    input:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08) !important;
+        outline: none !important;
+    }
+</style>
+{% endblock %}

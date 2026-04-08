@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Your Email</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <tr>
+            <td bgcolor="#2563eb" style="padding: 40px 20px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; letter-spacing: 1px;">MyShop</h1>
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding: 40px 30px;">
+                <h2 style="color: #1f2937; margin-bottom: 20px; font-size: 22px;">Hi {{ user.username }},</h2>
+                
+                <p style="color: #4b5563; line-height: 1.6; font-size: 16px; margin-bottom: 30px;">
+                    Thank you for joining **MyShop**! We're excited to have you on board. To get started, please confirm your email address by clicking the button below:
+                </p>
+
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <a href="http://{{ domain }}{% url 'email_verification' uid64=uid token=token %}" 
+                    style="background-color: #2563eb; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);">
+                        Verify Email Address
+                    </a>
+                </div>
+
+                <p style="color: #9ca3af; font-size: 14px; line-height: 1.5;">
+                    If the button above doesn't work, copy and paste this link into your browser: <br>
+                    <span style="color: #2563eb; word-break: break-all;">http://{{ domain }}{% url 'email_verification' uid64=uid token=token %}</span>
+                </p>
+            </td>
+        </tr>
+
+        <tr>
+            <td bgcolor="#f9fafb" style="padding: 30px; text-align: center; border-top: 1px solid #f3f4f6;">
+                <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+                    &copy; 2026 MyShop Inc. Jaipur, Rajasthan. <br>
+                    If you didn't create an account, you can safely ignore this email.
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

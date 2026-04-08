@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}MyShop{% endblock %}</title>
+
+    <!-- ✅ Tailwind (Stable CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- ✅ Font (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ✅ AOS (Scroll Animation) -->
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- ✅ Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-4.0.0.js" integrity="sha256-9fsHeVnKBvqh3FB2HYu7g2xseAZ5MlN6Kz/qnkASV8U=" crossorigin="anonymous"></script>
+
+    <style>
+#cursor-dot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 12px;
+        height: 12px;
+        background-color: #DBFF00; /* Neon Lime Dot */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+}
+
+#cursor-outline {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 36px;
+        height: 36px;
+        border: 2px solid #2563eb; /* Primary Blue Outline */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        /* Smooth scale transition */
+        transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+</style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-[Poppins] cursor">
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+    <div class="min-h-screen flex flex-col">
+
+        <!-- 🔹 Header -->
+        {% include "myapp/header.html" %}
+
+        <!-- 🔹 Main Content -->
+        <main class="flex-1">
+            <div class="max-w-7xl mx-auto px-6 py-8">
+                {% block body %}
+                {% endblock %}
+            </div>
+        </main>
+
+        <!-- 🔹 Footer -->
+        <footer>
+            {% include "myapp/footer.html" %}
+        </footer>
+
+    </div>
+
+    <!-- ✅ AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+        AOS.init({
+            duration: 800,
+            once: false
+        });
+        
+    </script>
+    <script>
+    const dot = document.getElementById("cursor-dot");
+    const outline = document.getElementById("cursor-outline");
+
+    let mouseX = 0, mouseY = 0;
+    let dotX = 0, dotY = 0;
+    let outlineX = 0, outlineY = 0;
+
+    document.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        // 🔥 Dot: Ekdum mouse ke niche (No Delay)
+        // Isko animate loop se bahar rakha hai taaki ye 1:1 follow kare
+        dot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+    });
+
+    function animate() {
+        // 🔥 Outline: Isme hum "0.1" ka factor de rahe hain (Smooth Lag)
+        outlineX += (mouseX - outlineX) * 0.1;
+        outlineY += (mouseY - outlineY) * 0.1;
+        
+        outline.style.transform = `translate3d(${outlineX - 20}px, ${outlineY - 20}px, 0)`;
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Click feedback
+    document.addEventListener("mousedown", () => {
+        gsap.to(outline, { scale: 0.8, duration: 0.2 });
+    });
+    document.addEventListener("mouseup", () => {
+        gsap.to(outline, { scale: 1, duration: 0.2 });
+    });
+</script>
+</body>
+</html>

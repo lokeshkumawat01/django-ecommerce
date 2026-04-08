@@ -1,0 +1,124 @@
+{% extends 'myapp/base.html' %}
+{% block body %}
+
+<div class="max-w-6xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-8">
+
+    <!-- LEFT: ADDRESS + DETAILS -->
+    <div class="md:col-span-2 space-y-6">
+
+        <!-- Address Card -->
+        <div class="bg-white p-6 rounded-xl shadow-md gsap-reveal">
+            <h2 class="text-xl font-semibold mb-4">Delivery Address</h2>
+
+            {% if address %}
+                <p class="font-medium">{{ address.full_name }}</p>
+                <p class="text-sm text-gray-600">{{ address.line1 }}, {{ address.city }}</p>
+                <p class="text-sm text-gray-600">{{ address.state }} - {{ address.postal_code }}</p>
+                <p class="text-sm text-gray-600">{{ address.country }}</p>
+                <p class="text-sm mt-2">📞 {{ address.phone }}</p>
+
+                <a href="{% url 'add_address' %}" 
+                   class="text-blue-600 text-sm mt-2 inline-block hover:underline">
+                   Change Address
+                </a>
+            {% else %}
+                <p class="text-red-500">No address found</p>
+                <a href="{% url 'add_address' %}" 
+                   class="text-blue-600 underline">Add Address</a>
+            {% endif %}
+        </div>
+
+        <!-- Cart Items -->
+        <div class="bg-white p-6 rounded-xl shadow-md gsap-reveal">
+            <h2 class="text-xl font-semibold mb-4">Order Items</h2>
+
+            {% for item in cart %}
+            <div class="flex items-center justify-between border-b py-3">
+
+                <div class="flex items-center gap-4">
+                    <img src="{{ item.product.image.url }}" 
+                         class="w-16 h-16 rounded object-cover">
+
+                    <div>
+                        <p class="font-medium">{{ item.product.name }}</p>
+                        <p class="text-sm text-gray-500">Qty: {{ item.qty }}</p>
+                    </div>
+                </div>
+
+                <p class="font-semibold">₹{{ item.total }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <!-- RIGHT: ORDER SUMMARY -->
+    <div class="bg-white p-6 rounded-xl shadow-lg space-y-4 gsap-reveal">
+
+        <h2 class="text-xl font-semibold">Order Summary</h2>
+
+        <div class="flex justify-between text-sm">
+            <span>Subtotal</span>
+            <span>₹{{ total }}</span>
+        </div>
+
+        <div class="flex justify-between text-sm">
+            <span>Shipping</span>
+            <span class="text-green-600">Free</span>
+        </div>
+
+        <hr>
+
+        <div class="flex justify-between font-bold text-lg">
+            <span>Total</span>
+            <span>₹{{ total }}</span>
+        </div>
+
+        <!-- Place Order Button -->
+        <button id="place-order-btn"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold magnetic-btn">
+            Place Order
+        </button>
+
+    </div>
+
+</div>
+
+<!-- 🔥 GSAP -->
+<script>
+gsap.utils.toArray(".gsap-reveal").forEach((el, i) => {
+    gsap.from(el, {
+        y: 50,
+        opacity: 0,
+        duration: 0.7,
+        delay: i * 0.2,
+        ease: "power3.out"
+    });
+});
+</script>
+
+<!-- 🔥 AJAX PLACE ORDER -->
+<script>
+$("#place-order-btn").click(function () {
+
+    $(this).text("Processing...").prop("disabled", true);
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'place_order' %}",
+        data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function (response) {
+            if (response.success) {
+                window.location.href = "/orders/order-success/";
+            } else {
+                window.location.href = "/orders/order-failed/";
+            }
+        }
+    });
+
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'myapp/base.html' %}
+{% block body%}
+
+<div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+    <!-- Image -->
+    <div class="rounded-xl overflow-hidden shadow-lg gsap-reveal">
+        <img class="w-full h-80 object-cover hover:scale-105 transition duration-500"
+             src="{{product.image.url}}" alt="">
+    </div>
+
+    <!-- Product Details -->
+    <div class="space-y-4 gsap-reveal">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">
+            {{product.name}}
+        </h1>
+
+        <div class="text-yellow-500">
+            ★★★★☆ <span class="text-gray-600 text-sm">(12551 reviews)</span>
+        </div>
+
+        <p class="text-3xl font-bold text-blue-600">
+            ₹{{product.price}}
+        </p>
+
+        <p class="text-gray-600">
+            {{product.description}}
+        </p>
+
+        <p class="text-sm text-green-600 font-medium">
+            Free Delivery Available 🚚
+        </p>
+    </div> 
+
+    <!-- Purchase Box -->
+    <div class="border rounded-xl p-6 shadow-xl space-y-4 gsap-reveal">
+
+        <p class="text-2xl font-bold text-gray-900">₹{{product.price}}</p>
+
+        <select id="select" class="w-full border rounded-lg p-2">
+            <option value="1">Qty: 1</option>
+            <option value="2">Qty: 2</option>
+            <option value="3">Qty: 3</option>
+        </select>
+
+        {% if product.stock %}
+            <p class="text-green-600 font-medium">In Stock</p>
+        {% else %}
+            <p class="text-red-600 font-medium">Out of Stock</p>
+        {% endif %}
+
+        <!-- Add to Cart -->
+        <button type="button"
+            id="atc"
+            value="{{product.id}}"
+            class="magnetic-btn w-full bg-yellow-400 hover:bg-yellow-500 py-2 rounded-lg font-semibold">
+            Add to Cart
+        </button>
+
+        <!-- Buy Now -->
+        <a href="{% url 'buy_now' product.id %}"
+           class="magnetic-btn block text-center w-full bg-gray-900 hover:bg-gray-800 text-white py-2 rounded-lg font-semibold">
+           Buy Now
+        </a>
+
+    </div>
+
+</div>
+
+<!-- 🔥 GSAP Animation -->
+<script>
+gsap.utils.toArray(".gsap-reveal").forEach((el, i) => {
+    gsap.from(el, {
+        y: 80,
+        opacity: 0,
+        duration: 0.8,
+        delay: i * 0.2,
+        ease: "power3.out"
+    });
+});
+</script>
+
+<!-- 🔥 Add to Cart AJAX -->
+<script>
+$(document).on("click", "#atc", function (e) {
+    e.preventDefault();
+
+    let product_id = $(this).val();
+    let qty = $("#select").val();
+
+    $.ajax({
+        type: "POST",
+        url: "{% url 'cart_add' %}",
+        data: {
+            product_id: product_id,
+            product_quantity: qty,
+            csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function(response){
+            $("#cart-qty").text(response.qty);
+
+            // 🔥 toast
+            alert("Product added to cart ✅");
+        }
+    });
+});
+</script>
+
+{% endblock %}
