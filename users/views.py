@@ -11,6 +11,7 @@ from orders.models import Address
 from orders.form import AddressForm
 from .form import LoginForm, UserUpdateForm
 from django.contrib.auth import authenticate, login, logout 
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -74,6 +75,9 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('index')
+
+
+@login_required
 
 def profile(request):
     # 1. Pehle check karo user ka purana address hai ya nahi

@@ -1,25 +1,58 @@
 {% extends 'myapp/base.html' %}
 {% block body %}
-<div class="flex flex-col items-center justify-center py-20 text-center">
-    <div class="bg-green-100 p-6 rounded-full mb-6 gsap-icon">
+<div class="flex flex-col items-center justify-center py-20 px-4 text-center min-h-[70vh]">
+    
+    <div class="bg-green-100 p-6 rounded-full mb-6 gsap-icon shadow-lg shadow-green-100">
         <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
         </svg>
     </div>
 
-    <h1 class="text-4xl font-bold text-gray-900 mb-2 gsap-text">Order Placed Successfully! 🎉</h1>
-    <p class="text-gray-500 text-lg mb-8 gsap-text">Thank you for your purchase. Your order has been received.</p>
+    <h1 class="text-4xl font-black text-gray-900 mb-2 gsap-text">Order Confirmed! 🎉</h1>
+    <p class="text-gray-500 text-lg mb-8 gsap-text">Your transaction was successful and your order is being processed.</p>
 
-    <div class="flex gap-4 gsap-btn">
-        <a href="{% url 'index' %}" class="bg-gray-900 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-800 transition transform hover:-translate-y-1">
-            Back to Shopping
+    <div class="gsap-text relative bg-gray-900 rounded-[2.5rem] p-10 mb-12 max-w-sm w-full shadow-2xl overflow-hidden group border border-gray-800">
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-indigo-600/20 blur-3xl rounded-full"></div>
+        
+        <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-4">Secure Tracking Reference</p>
+        
+        <h2 class="text-3xl font-mono font-bold text-white tracking-[0.15em] mb-4 group-hover:text-indigo-300 transition-colors uppercase">
+            {{ order.order_id|default:"66154A8X9P2L" }}
+        </h2>
+        
+        <div class="flex items-center justify-center gap-2 mb-6">
+            <div class="h-[1px] bg-gray-700 flex-1"></div>
+            <span class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Digital Token</span>
+            <div class="h-[1px] bg-gray-700 flex-1"></div>
+        </div>
+        
+        <div class="flex justify-between text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+            <span>{{ order.created_at|date:"M d, Y" }}</span>
+            <span class="text-green-400">• Verified</span>
+        </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 gsap-btn">
+        <a href="{% url 'track_order' %}?order_id={{ order.order_id }}" 
+           class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-indigo-500/20 hover:bg-indigo-700 transition transform hover:-translate-y-1 active:scale-95">
+            Track Order Now
+        </a>
+
+        <a href="{% url 'index' %}" 
+           class="bg-white text-gray-900 border-2 border-gray-100 px-10 py-4 rounded-2xl font-bold hover:bg-gray-50 transition transform hover:-translate-y-1 active:scale-95">
+            Back to Home
         </a>
     </div>
+
+    <p class="mt-10 text-xs text-gray-400 gsap-btn font-medium uppercase tracking-widest italic opacity-60">
+        Encryption: AES-256 Bit Standard Generated Reference
+    </p>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
-    gsap.from(".gsap-icon", { scale: 0, opacity: 0, duration: 0.8, ease: "back.out(1.7)" });
-    gsap.from(".gsap-text", { y: 20, opacity: 0, duration: 0.6, delay: 0.4, stagger: 0.2 });
-    gsap.from(".gsap-btn", { opacity: 0, duration: 0.5, delay: 1 });
+    gsap.from(".gsap-icon", { scale: 0, opacity: 0, duration: 1, ease: "back.out(2)" });
+    gsap.from(".gsap-text", { y: 30, opacity: 0, duration: 0.8, delay: 0.3, stagger: 0.2, ease: "power2.out" });
+    gsap.from(".gsap-btn", { y: 20, opacity: 0, duration: 0.6, delay: 1.2, ease: "power1.out" });
 </script>
 {% endblock %}

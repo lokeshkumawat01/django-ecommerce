@@ -4,6 +4,7 @@ from .form import AddressForm
 from .models import Address, Order, OrderItem
 from cart.cart import Cart
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def add_address(request):
@@ -87,6 +88,10 @@ def place_order(request):
             'redirect_url': 'ordersz/order_success/'
         })
 
+# orders/views.py
+def order_history(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'orders/order_history.html', {'orders': orders})
 
 def order_success(request):
     return render(request, 'orders/order_success.html')
@@ -108,3 +113,27 @@ def buy_now(request, id):
     request.session['cart'] = cart
 
     return redirect('checkout')
+
+
+def track_order_page(request):
+    order = None
+    error_message = None
+    
+    # Jab user form submit karega, tab URL mein ?order_id=ORD-... aayega
+    search_query = request.GET.get('order_id')
+    
+    if search_query:
+        # Search query ko clean karna (spaces hatana)
+        search_query = search_query.strip()
+        try:
+            # Database mein check karo ki kya ye ID exist karti hai
+            order = Order.objects.get(order_id=search_query)
+        except Order.DoesNotExist:
+            error_message = "Sorry! No order found with this Tracking ID. Please check again."
+
+    context = {
+        'order': order,
+        'error': error_message,
+        'search_query': search_query # Taaki search box mein ID likhi hui reh jaye
+    }
+    return render(request, 'orders/track_order.html', context)

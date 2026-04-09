@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyShop | Royal Analytics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        /* Glassmorphism effect */
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+    </style>
+</head>
+<body class="min-h-screen flex">
+
+    <aside class="w-64 glass-card border-r border-slate-800 flex flex-col hidden md:flex">
+        <div class="p-6">
+            <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400">
+                MyShop Pro.
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">Analytics Dashboard</p>
+        </div>
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <a href="#" class="flex items-center gap-3 px-4 py-3 bg-indigo-600/20 text-indigo-400 rounded-xl font-semibold border border-indigo-500/30">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                Overview
+            </a>
+            <a href="/admin/" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Django Admin
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-8 overflow-y-auto">
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-white">Dashboard Overview</h2>
+                <p class="text-slate-400 mt-1">Real-time business insights & tracking.</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition"><svg class="w-16 h-16 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path></svg></div>
+                <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Total Sales</p>
+                <h3 class="text-3xl font-black text-white mt-2">{{ total_sales }}</h3>
+                <p class="text-emerald-400 text-sm mt-2">From {{ total_orders }} orders</p>
+            </div>
+            
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition"><svg class="w-16 h-16 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg></div>
+                <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Net Profit</p>
+                <h3 class="text-3xl font-black text-white mt-2">{{ total_profit }}</h3>
+            </div>
+
+            <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+                <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Returns / Cancelled</p>
+                <h3 class="text-3xl font-black text-white mt-2">{{ return_rate }}</h3>
+            </div>
+
+            <div class="glass-card p-6 rounded-2xl border-l-4 {% if loss_products_count > 0 %}border-rose-500{% else %}border-emerald-500{% endif %}">
+                <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Loss Making Products</p>
+                <h3 class="text-3xl font-black text-white mt-2">{{ loss_products_count }} Items</h3>
+                <p class="text-slate-400 text-sm mt-2">Review pricing strategy</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <div class="glass-card p-6 rounded-2xl lg:col-span-2">
+                <h3 class="text-lg font-bold text-white mb-6">Revenue Trend</h3>
+                <canvas id="salesChart" height="100"></canvas>
+            </div>
+            
+            <div class="glass-card p-6 rounded-2xl">
+                <h3 class="text-lg font-bold text-white mb-6">Top Selling Regions</h3>
+                <canvas id="regionChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white">Product Performance (Profit / Loss)</h3>
+            </div>
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-800/50 text-slate-400 text-sm uppercase tracking-wider">
+                        <th class="p-4 font-medium">Product Name</th>
+                        <th class="p-4 font-medium">Units Sold</th>
+                        <th class="p-4 font-medium">Cost Price</th>
+                        <th class="p-4 font-medium">Selling Price</th>
+                        <th class="p-4 font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-300 text-sm divide-y divide-slate-800/50">
+                    
+                    {% for item in top_products %}
+                    <tr class="hover:bg-slate-800/30 transition">
+                        <td class="p-4 font-semibold text-white flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-indigo-500/20 flex items-center justify-center text-indigo-400">{{ forloop.counter }}</div>
+                            {{ item.product__name }}
+                        </td>
+                        <td class="p-4">{{ item.total_sold }}</td>
+                        <td class="p-4">₹{{ item.product__cost_price }}</td>
+                        <td class="p-4">₹{{ item.product__price }}</td>
+                        <td class="p-4"><span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">Top Seller</span></td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for loss_item in loss_products %}
+                    <tr class="hover:bg-slate-800/30 transition">
+                        <td class="p-4 font-semibold text-white flex items-center gap-3">
+                            <div class="w-8 h-8 rounded bg-rose-500/20 flex items-center justify-center text-rose-400">!</div>
+                            {{ loss_item.name }}
+                        </td>
+                        <td class="p-4 text-slate-500">Needs Check</td>
+                        <td class="p-4 text-rose-400">₹{{ loss_item.cost_price }}</td>
+                        <td class="p-4">₹{{ loss_item.price }}</td>
+                        <td class="p-4"><span class="px-3 py-1 rounded-full bg-rose-500/20 text-rose-400 text-xs font-bold">Pricing Issue</span></td>
+                    </tr>
+                    {% endfor %}
+
+                    {% if not top_products and not loss_products %}
+                    <tr>
+                        <td colspan="5" class="p-8 text-center text-slate-500">No data available yet. Start selling!</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Getting Live JSON Data from Django View
+        const rawLabels = '{{ months_json|escapejs }}';
+        const rawData = '{{ revenue_json|escapejs }}';
+        
+        // Parse the JSON safely (fallback to empty array if something goes wrong)
+        const chartLabels = rawLabels ? JSON.parse(rawLabels) : ['No Data'];
+        const chartData = rawData ? JSON.parse(rawData) : [0];
+
+        // Main Revenue Line Chart
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line', // Line graph shows trend better
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Monthly Revenue (₹)',
+                    data: chartData,
+                    borderColor: '#6366f1', // Indigo line
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)', // Light indigo fill
+                    borderWidth: 3,
+                    tension: 0.4, // Curvy line
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8' } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                },
+                plugins: { legend: { labels: { color: '#f8fafc' } } }
+            }
+        });
+
+        // Doughnut Chart (Static Placeholder - You can make this live later by grouping user addresses)
+        const ctx2 = document.getElementById('regionChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Delhi NCR', 'Mumbai', 'Bangalore', 'Jaipur', 'Others'],
+                datasets: [{
+                    data: [35, 25, 20, 10, 10],
+                    backgroundColor: ['#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#475569'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20 } } },
+                cutout: '75%'
+            }
+        });
+    </script>
+</body>
+</html>

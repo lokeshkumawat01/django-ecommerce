@@ -1,108 +1,92 @@
 {% extends 'myapp/base.html' %}
 {% block body %}
 
-<div class="bg-gray-50 min-h-screen">
-    <div class="bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto py-12 px-6">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div data-aos="fade-right">
-                    <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Our Collection</h1>
-                    <p class="text-gray-500 mt-2 text-lg">Quality products curated just for you.</p>
-                </div>
-                <div class="relative w-full md:w-96" data-aos="fade-left">
-                    <input type="text" placeholder="Search products..." 
-                        class="w-full pl-12 pr-4 py-3 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-blue-600 transition-all outline-none">
-                    <svg class="w-6 h-6 text-gray-400 absolute left-4 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-            </div>
+<div class="bg-gray-50 min-h-screen py-10">
+    <div class="max-w-7xl mx-auto px-4">
+
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
+                All Products
+            </h2>
+
+            <form method="GET" class="flex gap-2 w-full md:w-auto">
+                <input type="text" name="q" placeholder="Search products..."
+                       value="{{ request.GET.q }}"
+                       class="border px-4 py-2 rounded-lg w-full md:w-64 focus:ring-2 focus:ring-blue-500 outline-none">
+
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Search
+                </button>
+            </form>
         </div>
-    </div>
 
-    <div class="max-w-7xl mx-auto py-10 px-6">
-        <div class="flex flex-col lg:flex-row gap-8">
-            
-            <aside class="w-full lg:w-64 space-y-8" data-aos="fade-right">
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Categories</h3>
-                    <div class="space-y-2">
-                        <a href="#" class="flex items-center justify-between px-4 py-2 rounded-xl bg-blue-600 text-white font-medium">
-                            <span>All Items</span>
-                            <span class="text-xs bg-blue-500 px-2 py-0.5 rounded-full">{{ products|length }}</span>
-                        </a>
-                        <a href="#" class="flex items-center justify-between px-4 py-2 rounded-xl text-gray-600 hover:bg-white hover:shadow-sm transition">
-                            <span>Electronics</span>
-                        </a>
-                        <a href="#" class="flex items-center justify-between px-4 py-2 rounded-xl text-gray-600 hover:bg-white hover:shadow-sm transition">
-                            <span>Fashion</span>
-                        </a>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+            {% for product in products %}
+            <div class="group bg-white rounded-2xl shadow-sm hover:shadow-2xl transition duration-500 overflow-hidden border relative">
+
+                <div class="relative h-64 overflow-hidden bg-gray-100">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    {% endif %}
+
+                    <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition"></div>
+
+                    <span class="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-red-500 text-white text-xs px-3 py-1 rounded-full shadow">
+                        New
+                    </span>
+
+                    <a href="{% url 'detail' product.slug %}"
+                       class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-black text-sm px-4 py-2 rounded-lg shadow opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                        Quick View
+                    </a>
+                </div>
+
+                <div class="p-5">
+
+                    <p class="text-xs text-gray-400 uppercase tracking-wide">
+                        {{ product.category }}
+                    </p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 mt-1 group-hover:text-blue-600 transition truncate">
+                        {{ product.name }}
+                    </h3>
+
+                    <p class="text-sm text-gray-500 mt-1 line-clamp-2">
+                        {{ product.description|truncatechars:60 }}
+                    </p>
+
+                    <div class="flex items-center gap-1 text-yellow-400 text-sm mt-2">
+                        ★★★★☆
+                        <span class="text-gray-400 text-xs ml-1">(120)</span>
                     </div>
-                </div>
 
-                <div>
-                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Price Range</h3>
-                    <input type="range" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
-                    <div class="flex justify-between mt-2 text-xs font-bold text-gray-400">
-                        <span>₹0</span>
-                        <span>₹50,000+</span>
-                    </div>
-                </div>
-            </aside>
-
-            <div class="flex-1">
-                <div class="flex justify-between items-center mb-8 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-gray-500 text-sm font-medium">Showing <span class="text-gray-900 font-bold">{{ products|length }}</span> products</p>
-                    <select class="bg-transparent border-none text-sm font-bold text-gray-700 focus:ring-0 cursor-pointer">
-                        <option>Sort by: Newest</option>
-                        <option>Price: Low to High</option>
-                        <option>Price: High to Low</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                    {% for product in products %}
-                    <div class="group relative bg-white rounded-[2rem] border border-gray-100 p-3 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-100/50" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:50 }}">
-                        
-                        <div class="relative h-72 rounded-[1.5rem] overflow-hidden bg-gray-100">
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                            
-                            <div class="absolute top-4 left-4">
-                                <span class="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter text-gray-900 shadow-sm">New Arrival</span>
-                            </div>
-
-                            <a href="{% url 'detail' product.id %}" class="absolute inset-0 z-10"></a>
+                    <div class="flex items-center justify-between mt-4">
+                        <div>
+                            <p class="text-xl font-bold text-gray-900">
+                                ₹{{ product.price }}
+                            </p>
+                            <p class="text-sm text-gray-400 line-through">
+                                ₹{{ product.price|add:"500" }}
+                            </p>
                         </div>
 
-                        <div class="p-5">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">{{ product.category }}</p>
-                                    <h3 class="text-lg font-bold text-gray-800 leading-tight group-hover:text-blue-600 transition-colors">{{ product.name }}</h3>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center justify-between mt-6">
-                                <div>
-                                    <span class="text-xs text-gray-400 block font-bold uppercase">Price</span>
-                                    <span class="text-2xl font-black text-gray-900 tracking-tighter">₹{{ product.price }}</span>
-                                </div>
-
-                                <form action="{% url 'detail' product.id %}" method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" class="bg-gray-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center hover:bg-blue-600 hover:rotate-12 transition-all duration-300 shadow-lg shadow-gray-200 hover:shadow-blue-200">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                        <a href="{% url 'detail' product.slug %}"
+                           class="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium shadow hover:scale-105 hover:shadow-lg transition">
+                            View
+                        </a>
                     </div>
-                    {% empty %}
-                    <div class="col-span-full py-32 text-center bg-white rounded-[3rem] border-2 border-dashed border-gray-100">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1170/1170577.png" class="w-20 h-20 mx-auto opacity-20 mb-4">
-                        <h2 class="text-xl font-bold text-gray-400">Oops! No products found.</h2>
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
+
+            {% empty %}
+            <div class="col-span-full text-center py-20">
+                <h2 class="text-gray-400 text-lg font-semibold">
+                    No products found
+                </h2>
+            </div>
+            {% endfor %}
+
         </div>
     </div>
 </div>
